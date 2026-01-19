@@ -111,3 +111,17 @@
   - MicMonitorApp tracks _volume locally and syncs to AudioEngine via set_volume()
   - Volume display and controls are separate menu items (display is non-clickable)
 ---
+
+## 2026-01-19 - US-008
+- **What was implemented**: Latency control in menu
+  - Added current latency display menu item (e.g., "Latency: 20ms")
+  - Added Latency Up (+5ms) and Latency Down (-5ms) menu items
+  - Latency changes apply to AudioEngine via set_latency() (restarts stream if running)
+  - Latency range is 5ms to 100ms with 5ms steps
+  - Added LATENCY_MIN, LATENCY_MAX, LATENCY_STEP class constants
+- **Files changed**: mic_monitor.py, prd.json
+- **Learnings for future iterations:**
+  - Latency controls follow the same pattern as volume controls (display + up/down buttons)
+  - MicMonitorApp tracks _latency locally and syncs to AudioEngine via set_latency()
+  - set_latency() automatically restarts the stream if monitoring is active
+---
