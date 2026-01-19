@@ -141,3 +141,25 @@
   - SettingsManager handles file I/O and creates config directory if needed
   - Config persists to ~/Library/Application Support/MicMonitor/config.json
 ---
+
+## 2026-01-19 - US-010
+- **What was implemented**: Graceful device handling
+  - Added error callback mechanism to AudioEngine (set_error_callback, _error_callback)
+  - Added _last_error property and clear_error() method to track/clear errors
+  - start() now returns bool indicating success/failure
+  - start() catches sd.PortAudioError and general Exception, sets error state instead of crashing
+  - stop() wrapped in try/except/finally to handle cleanup even if stream is invalid
+  - _audio_callback checks sd.CallbackFlags status for runtime stream errors
+  - MicMonitorApp tracks _has_error state for UI updates
+  - Added ICON_ERROR (🎤⚠️) and TEXT_ERROR ("Error - Click to Retry") constants
+  - _handle_audio_error callback stops monitoring and shows error state in menu
+  - _toggle_monitoring checks for success/failure from start() and shows error state if failed
+  - User can retry by clicking "Error - Click to Retry" menu item
+- **Files changed**: audio_engine.py, mic_monitor.py, prd.json
+- **Learnings for future iterations:**
+  - Error handling pattern: add callback mechanism for async errors, return bool for sync errors
+  - sd.PortAudioError is the specific exception type for sounddevice failures
+  - sd.CallbackFlags status is truthy when there are stream issues (input overflow, output underflow, etc.)
+  - stop() should always ensure _is_running=False even if stream.stop() fails
+  - UI error state uses consistent pattern: icon change + menu text change + _has_error flag
+---
