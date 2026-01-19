@@ -79,3 +79,19 @@
   - `name` parameter sets the app name
   - rumps automatically handles LSUIElement behavior (no Dock icon)
 ---
+
+## 2026-01-19 - US-006
+- **What was implemented**: Toggle monitoring menu item
+  - Added 'Start Monitoring' / 'Stop Monitoring' toggle menu item
+  - Clicking toggles AudioEngine on/off via start()/stop()
+  - Menu item text updates to reflect current state (TEXT_START/TEXT_STOP)
+  - Menu bar icon changes: 🎤 (inactive) → 🎤🔊 (active)
+  - Added class constants for icons and text labels
+- **Files changed**: mic_monitor.py, prd.json
+- **Learnings for future iterations:**
+  - rumps.MenuItem(title, callback=fn) creates a menu item with click handler
+  - self.menu = [items] sets the menu items (before quit_button)
+  - self.title changes the menu bar icon/text dynamically
+  - sender parameter in callback is the MenuItem that was clicked
+  - AudioEngine.is_running property checks if stream is active
+---
