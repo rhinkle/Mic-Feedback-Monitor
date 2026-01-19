@@ -3,6 +3,7 @@
 import rumps
 
 from audio_engine import AudioEngine
+from settings import SettingsManager
 
 
 class MicMonitorApp(rumps.App):
@@ -34,8 +35,16 @@ class MicMonitorApp(rumps.App):
             quit_button="Quit",
         )
         self._audio_engine = AudioEngine()
-        self._volume: int = 50  # Default volume
-        self._latency: int = 20  # Default latency in ms
+        self._settings = SettingsManager()
+
+        # Load saved settings
+        self._settings.load()
+        self._volume: int = self._settings.volume
+        self._latency: int = self._settings.latency_ms
+
+        # Apply saved settings to audio engine
+        self._audio_engine.set_volume(self._volume)
+        self._audio_engine.set_latency(self._latency)
 
         # Create menu items
         self._toggle_item = rumps.MenuItem(self.TEXT_START, callback=self._toggle_monitoring)
@@ -60,6 +69,12 @@ class MicMonitorApp(rumps.App):
             self._latency_down,
         ]
 
+    def _save_settings(self) -> None:
+        """Save current volume and latency settings to persistent storage."""
+        self._settings.volume = self._volume
+        self._settings.latency_ms = self._latency
+        self._settings.save()
+
     def _get_volume_text(self) -> str:
         """Get the volume display text."""
         return f"Volume: {self._volume}%"
@@ -77,6 +92,7 @@ class MicMonitorApp(rumps.App):
         self._volume = min(self.VOLUME_MAX, self._volume + self.VOLUME_STEP)
         self._audio_engine.set_volume(self._volume)
         self._update_volume_display()
+        self._save_settings()
 
     def _decrease_volume(self, sender: rumps.MenuItem) -> None:
         """Decrease volume by step amount.
@@ -87,6 +103,7 @@ class MicMonitorApp(rumps.App):
         self._volume = max(self.VOLUME_MIN, self._volume - self.VOLUME_STEP)
         self._audio_engine.set_volume(self._volume)
         self._update_volume_display()
+        self._save_settings()
 
     def _get_latency_text(self) -> str:
         """Get the latency display text."""
@@ -105,6 +122,7 @@ class MicMonitorApp(rumps.App):
         self._latency = min(self.LATENCY_MAX, self._latency + self.LATENCY_STEP)
         self._audio_engine.set_latency(self._latency)
         self._update_latency_display()
+        self._save_settings()
 
     def _decrease_latency(self, sender: rumps.MenuItem) -> None:
         """Decrease latency by step amount.
@@ -115,6 +133,7 @@ class MicMonitorApp(rumps.App):
         self._latency = max(self.LATENCY_MIN, self._latency - self.LATENCY_STEP)
         self._audio_engine.set_latency(self._latency)
         self._update_latency_display()
+        self._save_settings()
 
     def _toggle_monitoring(self, sender: rumps.MenuItem) -> None:
         """Toggle audio monitoring on/off.
