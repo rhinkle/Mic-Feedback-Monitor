@@ -79,3 +79,20 @@ class AudioEngine:
             volume: Volume level from 0 to 100.
         """
         self._volume = max(0, min(100, volume))
+
+    def set_latency(self, ms: int) -> None:
+        """Set audio latency via buffer size.
+
+        Latency changes take effect on the next start() call.
+        If the stream is currently running, it will be restarted
+        to apply the new latency setting.
+
+        Args:
+            ms: Latency in milliseconds (5 to 100).
+        """
+        self._latency_ms = max(5, min(100, ms))
+
+        # If stream is running, restart to apply new latency
+        if self._is_running:
+            self.stop()
+            self.start()

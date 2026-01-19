@@ -49,3 +49,16 @@
   - Stream uses mono (channels=1) and float32 dtype for processing
   - _latency_ms already exists in AudioEngine for US-004
 ---
+
+## 2026-01-19 - US-004
+- **What was implemented**: Audio engine latency control
+  - Added set_latency(ms) method to AudioEngine class
+  - Latency range constrained to 5ms-100ms using max/min clamping
+  - Latency changes take effect dynamically: if stream is running, it restarts with new blocksize
+  - Default latency remains 20ms (was already set in US-003)
+- **Files changed**: audio_engine.py, prd.json
+- **Learnings for future iterations:**
+  - set_latency() dynamically restarts the stream if running to apply new buffer size
+  - Latency affects blocksize calculation: blocksize = sample_rate * latency_ms / 1000
+  - Both set_volume() and set_latency() use max/min clamping for validation
+---
