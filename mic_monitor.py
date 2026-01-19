@@ -21,6 +21,11 @@ class MicMonitorApp(rumps.App):
     VOLUME_MAX = 100
     VOLUME_STEP = 10
 
+    # Latency constants
+    LATENCY_MIN = 5
+    LATENCY_MAX = 100
+    LATENCY_STEP = 5
+
     def __init__(self) -> None:
         """Initialize the MicMonitor menu bar app."""
         super().__init__(
@@ -30,6 +35,7 @@ class MicMonitorApp(rumps.App):
         )
         self._audio_engine = AudioEngine()
         self._volume: int = 50  # Default volume
+        self._latency: int = 20  # Default latency in ms
 
         # Create menu items
         self._toggle_item = rumps.MenuItem(self.TEXT_START, callback=self._toggle_monitoring)
@@ -37,12 +43,21 @@ class MicMonitorApp(rumps.App):
         self._volume_up = rumps.MenuItem("Volume Up (+10%)", callback=self._increase_volume)
         self._volume_down = rumps.MenuItem("Volume Down (-10%)", callback=self._decrease_volume)
 
+        # Create latency control menu items
+        self._latency_display = rumps.MenuItem(self._get_latency_text())
+        self._latency_up = rumps.MenuItem("Latency Up (+5ms)", callback=self._increase_latency)
+        self._latency_down = rumps.MenuItem("Latency Down (-5ms)", callback=self._decrease_latency)
+
         self.menu = [
             self._toggle_item,
             None,  # Separator
             self._volume_display,
             self._volume_up,
             self._volume_down,
+            None,  # Separator
+            self._latency_display,
+            self._latency_up,
+            self._latency_down,
         ]
 
     def _get_volume_text(self) -> str:
@@ -72,6 +87,34 @@ class MicMonitorApp(rumps.App):
         self._volume = max(self.VOLUME_MIN, self._volume - self.VOLUME_STEP)
         self._audio_engine.set_volume(self._volume)
         self._update_volume_display()
+
+    def _get_latency_text(self) -> str:
+        """Get the latency display text."""
+        return f"Latency: {self._latency}ms"
+
+    def _update_latency_display(self) -> None:
+        """Update the latency display menu item."""
+        self._latency_display.title = self._get_latency_text()
+
+    def _increase_latency(self, sender: rumps.MenuItem) -> None:
+        """Increase latency by step amount.
+
+        Args:
+            sender: The menu item that was clicked.
+        """
+        self._latency = min(self.LATENCY_MAX, self._latency + self.LATENCY_STEP)
+        self._audio_engine.set_latency(self._latency)
+        self._update_latency_display()
+
+    def _decrease_latency(self, sender: rumps.MenuItem) -> None:
+        """Decrease latency by step amount.
+
+        Args:
+            sender: The menu item that was clicked.
+        """
+        self._latency = max(self.LATENCY_MIN, self._latency - self.LATENCY_STEP)
+        self._audio_engine.set_latency(self._latency)
+        self._update_latency_display()
 
     def _toggle_monitoring(self, sender: rumps.MenuItem) -> None:
         """Toggle audio monitoring on/off.
