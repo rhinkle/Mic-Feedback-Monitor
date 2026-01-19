@@ -95,3 +95,19 @@
   - sender parameter in callback is the MenuItem that was clicked
   - AudioEngine.is_running property checks if stream is active
 ---
+
+## 2026-01-19 - US-007
+- **What was implemented**: Volume slider in menu
+  - Added current volume display menu item (e.g., "Volume: 50%")
+  - Added Volume Up (+10%) and Volume Down (-10%) menu items
+  - Volume changes apply to AudioEngine in real-time via set_volume()
+  - Volume range is 0% to 100% with 10% steps
+  - Added VOLUME_MIN, VOLUME_MAX, VOLUME_STEP class constants
+  - Removed unused SettingsManager import (will be needed for US-009)
+- **Files changed**: mic_monitor.py, prd.json
+- **Learnings for future iterations:**
+  - None (null separator) in menu list creates a visual separator line
+  - MenuItem.title can be updated dynamically to reflect state changes
+  - MicMonitorApp tracks _volume locally and syncs to AudioEngine via set_volume()
+  - Volume display and controls are separate menu items (display is non-clickable)
+---
