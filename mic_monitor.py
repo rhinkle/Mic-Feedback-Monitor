@@ -12,10 +12,12 @@ class MicMonitorApp(rumps.App):
     # Menu bar icons for different states
     ICON_INACTIVE = "🎤"
     ICON_ACTIVE = "🎤🔊"
+    ICON_ERROR = "🎤⚠️"
 
     # Menu item text
     TEXT_START = "Start Monitoring"
     TEXT_STOP = "Stop Monitoring"
+    TEXT_ERROR = "Error - Click to Retry"
 
     # Volume constants
     VOLUME_MIN = 0
@@ -36,6 +38,10 @@ class MicMonitorApp(rumps.App):
         )
         self._audio_engine = AudioEngine()
         self._settings = SettingsManager()
+        self._has_error: bool = False
+
+        # Set up error handling callback
+        self._audio_engine.set_error_callback(self._handle_audio_error)
 
         # Load saved settings
         self._settings.load()
@@ -135,20 +141,42 @@ class MicMonitorApp(rumps.App):
         self._update_latency_display()
         self._save_settings()
 
+    def _handle_audio_error(self, error_msg: str) -> None:
+        """Handle audio errors by updating UI to show error state.
+
+        Args:
+            error_msg: The error message describing what went wrong.
+        """
+        self._has_error = True
+        self._audio_engine.stop()
+        self._toggle_item.title = self.TEXT_ERROR
+        self.title = self.ICON_ERROR
+
     def _toggle_monitoring(self, sender: rumps.MenuItem) -> None:
         """Toggle audio monitoring on/off.
 
         Args:
             sender: The menu item that was clicked.
         """
+        # Clear error state when user tries to toggle
+        if self._has_error:
+            self._has_error = False
+            self._audio_engine.clear_error()
+
         if self._audio_engine.is_running:
             self._audio_engine.stop()
             self._toggle_item.title = self.TEXT_START
             self.title = self.ICON_INACTIVE
         else:
-            self._audio_engine.start()
-            self._toggle_item.title = self.TEXT_STOP
-            self.title = self.ICON_ACTIVE
+            success = self._audio_engine.start()
+            if success:
+                self._toggle_item.title = self.TEXT_STOP
+                self.title = self.ICON_ACTIVE
+            else:
+                # start() failed, show error state
+                self._has_error = True
+                self._toggle_item.title = self.TEXT_ERROR
+                self.title = self.ICON_ERROR
 
 
 def main() -> None:
