@@ -32,3 +32,20 @@
   - Config directory is auto-created in save() using mkdir(parents=True, exist_ok=True)
   - load() and save() handle file I/O; properties manage in-memory state
 ---
+
+## 2026-01-19 - US-003
+- **What was implemented**: Audio engine with passthrough
+  - Implemented AudioEngine class with full mic-to-output passthrough
+  - start() begins audio passthrough using sounddevice.Stream with callback
+  - stop() stops and closes stream cleanly
+  - set_volume(0-100) adjusts gain in real-time (volume/100 as multiplier)
+  - Uses system default input/output devices (no explicit device param = defaults)
+  - Included is_running property to check stream state
+- **Files changed**: audio_engine.py, prd.json
+- **Learnings for future iterations:**
+  - AudioEngine uses a callback-based sd.Stream for real-time processing
+  - Volume is applied as gain multiplier in _audio_callback
+  - blocksize is calculated from latency_ms (sample_rate * latency_ms / 1000)
+  - Stream uses mono (channels=1) and float32 dtype for processing
+  - _latency_ms already exists in AudioEngine for US-004
+---
