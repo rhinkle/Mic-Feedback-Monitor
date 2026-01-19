@@ -1,0 +1,157 @@
+{
+  "project": "MicMonitor",
+  "branchName": "ralph/mic-monitor",
+  "description": "macOS menu bar application for real-time mic-to-headset audio monitoring with volume and latency controls",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Project setup and dependencies",
+      "description": "As a developer, I need the project structure and dependencies configured so I can build the application.",
+      "acceptanceCriteria": [
+        "Create requirements.txt with: rumps, sounddevice, numpy",
+        "Create main entry point file: mic_monitor.py",
+        "Create basic project structure with empty modules for audio and settings",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Settings manager module",
+      "description": "As a developer, I need a settings manager to load and save configuration so user preferences persist.",
+      "acceptanceCriteria": [
+        "Create settings.py module with SettingsManager class",
+        "Settings stored in ~/Library/Application Support/MicMonitor/config.json",
+        "Default values: volume=50, latency_ms=20, monitoring_enabled=False",
+        "load() method reads config or returns defaults if file missing",
+        "save() method writes current settings to config file",
+        "Typecheck passes"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Audio engine with passthrough",
+      "description": "As a developer, I need an audio engine that captures mic input and plays it to output with configurable volume.",
+      "acceptanceCriteria": [
+        "Create audio_engine.py module with AudioEngine class",
+        "start() method begins audio passthrough using sounddevice",
+        "stop() method stops audio passthrough cleanly",
+        "set_volume(0-100) method adjusts gain in real-time",
+        "Uses system default input and output devices",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Audio engine latency control",
+      "description": "As a developer, I need the audio engine to support configurable latency via buffer size.",
+      "acceptanceCriteria": [
+        "Add set_latency(ms) method to AudioEngine class",
+        "Latency range: 5ms to 100ms",
+        "Latency changes take effect on next start() or dynamically if possible",
+        "Default latency is 20ms",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Basic menu bar app shell",
+      "description": "As a user, I want the app to appear in my menu bar so I can access it without dock clutter.",
+      "acceptanceCriteria": [
+        "App displays icon in macOS menu bar using rumps",
+        "Clicking icon shows dropdown menu",
+        "App does not appear in Dock (LSUIElement behavior via rumps)",
+        "Dropdown includes Quit option that exits the app",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Toggle monitoring menu item",
+      "description": "As a user, I want a toggle in the menu to turn mic monitoring on and off.",
+      "acceptanceCriteria": [
+        "Dropdown includes 'Start Monitoring' / 'Stop Monitoring' menu item",
+        "Clicking toggles the audio engine on/off",
+        "Menu item text updates to reflect current state",
+        "Menu bar icon changes to indicate active/inactive state (e.g., different title or icon)",
+        "Typecheck passes"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-007",
+      "title": "Volume slider in menu",
+      "description": "As a user, I want to adjust feedback volume from the menu bar dropdown.",
+      "acceptanceCriteria": [
+        "Dropdown shows current volume level (e.g., 'Volume: 50%')",
+        "Dropdown includes volume adjustment options (increase/decrease or preset levels)",
+        "Volume changes apply to audio engine in real-time",
+        "Volume range is 0% to 100%",
+        "Typecheck passes"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "Latency control in menu",
+      "description": "As a user, I want to adjust audio latency from the menu bar dropdown.",
+      "acceptanceCriteria": [
+        "Dropdown shows current latency value (e.g., 'Latency: 20ms')",
+        "Dropdown includes latency adjustment options (increase/decrease or presets)",
+        "Latency changes apply to audio engine",
+        "Latency range is 5ms to 100ms",
+        "Typecheck passes"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-009",
+      "title": "Integrate settings persistence",
+      "description": "As a user, I want my volume and latency settings saved between sessions.",
+      "acceptanceCriteria": [
+        "App loads settings from SettingsManager on startup",
+        "Volume and latency initialize to saved values",
+        "Settings save automatically when volume or latency changes",
+        "Settings persist after quitting and reopening app",
+        "Typecheck passes"
+      ],
+      "priority": 9,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-010",
+      "title": "Graceful device handling",
+      "description": "As a user, I want the app to handle audio device changes gracefully.",
+      "acceptanceCriteria": [
+        "App uses system default input/output devices",
+        "If audio stream fails, monitoring stops and user sees error state",
+        "App does not crash if no audio devices available",
+        "Typecheck passes"
+      ],
+      "priority": 10,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}
