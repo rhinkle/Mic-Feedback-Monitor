@@ -125,3 +125,19 @@
   - MicMonitorApp tracks _latency locally and syncs to AudioEngine via set_latency()
   - set_latency() automatically restarts the stream if monitoring is active
 ---
+
+## 2026-01-19 - US-009
+- **What was implemented**: Integrate settings persistence
+  - Added SettingsManager import and instantiation in MicMonitorApp
+  - App loads settings via _settings.load() on startup
+  - Volume and latency initialize from saved values (_settings.volume, _settings.latency_ms)
+  - Saved settings applied to AudioEngine at startup via set_volume() and set_latency()
+  - Added _save_settings() helper method to sync and persist settings
+  - Auto-save on every volume/latency change (called in _increase/_decrease methods)
+- **Files changed**: mic_monitor.py, prd.json
+- **Learnings for future iterations:**
+  - Settings persistence follows pattern: load on init, save on change
+  - _save_settings() syncs local _volume/_latency to SettingsManager then calls save()
+  - SettingsManager handles file I/O and creates config directory if needed
+  - Config persists to ~/Library/Application Support/MicMonitor/config.json
+---
