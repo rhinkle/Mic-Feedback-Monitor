@@ -17,3 +17,18 @@
   - Using mypy with --ignore-missing-imports since third-party stubs aren't installed
   - Installed mypy in venv for type checking
 ---
+
+## 2026-01-19 - US-002
+- **What was implemented**: Settings manager module
+  - Implemented SettingsManager class with full functionality
+  - Settings stored at ~/Library/Application Support/MicMonitor/config.json
+  - Default values: volume=50, latency_ms=20, monitoring_enabled=False
+  - load() reads config or returns defaults if file missing (handles JSON errors gracefully)
+  - save() writes current settings, creating directory if needed
+  - Added property accessors with validation (volume 0-100, latency 5-100ms)
+- **Files changed**: settings.py, prd.json
+- **Learnings for future iterations:**
+  - SettingsManager exposes settings via properties with getters/setters for validation
+  - Config directory is auto-created in save() using mkdir(parents=True, exist_ok=True)
+  - load() and save() handle file I/O; properties manage in-memory state
+---
