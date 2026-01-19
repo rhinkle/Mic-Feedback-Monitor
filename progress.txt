@@ -2,6 +2,7 @@
 - Use `.venv/bin/mypy --ignore-missing-imports` for type checking
 - Project uses Python 3.13 with venv at .venv/
 - Main entry point is mic_monitor.py
+- MicMonitorApp extends rumps.App for menu bar functionality
 
 ---
 
@@ -61,4 +62,20 @@
   - set_latency() dynamically restarts the stream if running to apply new buffer size
   - Latency affects blocksize calculation: blocksize = sample_rate * latency_ms / 1000
   - Both set_volume() and set_latency() use max/min clamping for validation
+---
+
+## 2026-01-19 - US-005
+- **What was implemented**: Basic menu bar app shell
+  - Created MicMonitorApp class extending rumps.App
+  - App displays 🎤 icon in macOS menu bar
+  - Clicking icon shows dropdown menu with Quit option
+  - App uses rumps default LSUIElement behavior (no Dock icon)
+  - Quit option exits the app properly via rumps built-in quit_button
+- **Files changed**: mic_monitor.py, prd.json
+- **Learnings for future iterations:**
+  - rumps.App is the base class for menu bar apps
+  - `quit_button="Quit"` automatically adds a Quit menu item with proper exit behavior
+  - `title` parameter sets the menu bar icon/text (using emoji 🎤 for mic icon)
+  - `name` parameter sets the app name
+  - rumps automatically handles LSUIElement behavior (no Dock icon)
 ---
