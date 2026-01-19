@@ -1,0 +1,19 @@
+## Codebase Patterns
+- Use `.venv/bin/mypy --ignore-missing-imports` for type checking
+- Project uses Python 3.13 with venv at .venv/
+- Main entry point is mic_monitor.py
+
+---
+
+## 2026-01-19 - US-001
+- **What was implemented**: Project setup and dependencies
+  - Created requirements.txt with rumps, sounddevice, numpy
+  - Created main entry point mic_monitor.py
+  - Created empty modules: audio_engine.py and settings.py
+  - Added .gitignore for Python projects
+- **Files changed**: requirements.txt, mic_monitor.py, audio_engine.py, settings.py, .gitignore, prd.json
+- **Learnings for future iterations:**
+  - This is a fresh project with no git repo, so needed to initialize git first
+  - Using mypy with --ignore-missing-imports since third-party stubs aren't installed
+  - Installed mypy in venv for type checking
+---
